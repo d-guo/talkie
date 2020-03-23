@@ -13,5 +13,24 @@ runs
 */
 
 int main(int argc, char *argv[]) {
+  int sockfd, connection;
+  struct sockaddr_in serv_addr, cli_addr;
+
+  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_port = htons(9002);
+  serv_addr.sin_addr.s_addr = INADDR_ANY;
+
+  connection = connect(sockfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr));
+
+  //testing recv from server
+  int recv_int;
+  char d[256] = "sdfiusdnf";
+  recv(sockfd, &d, sizeof(recv_int), 0);
+  printf("Nice: %s\n", d);
+  //
+
+  close(sockfd);
   return 0;
 }

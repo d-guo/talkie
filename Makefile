@@ -1,12 +1,12 @@
 CC = gcc
 ARGS = -Wall -g
 
-all: server_c_tcp client_c_tcp
+all: server client
 
-server_c_tcp: server.c
+server: server.c
 	$(CC) $(ARGS) server.c -o server
 
-client_c_tcp: client.c
+client: client.c
 	$(CC) $(ARGS) client.c -o client
 
 clean:
