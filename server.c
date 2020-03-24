@@ -17,6 +17,7 @@ runs
 int main(int argc, char *argv[]) {
   int sockfd, cli_socket;
   struct sockaddr_in serv_addr, cli_addr;
+  socklen_t clilen;
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -26,12 +27,11 @@ int main(int argc, char *argv[]) {
 
   bind(sockfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr));
 
-  listen(sockfd, 1);
-  cli_socket = accept(sockfd, (struct sockaddr*) &cli_addr, 0);
+  listen(sockfd, 5);
+  cli_socket = accept(sockfd, (struct sockaddr*) &cli_addr, &clilen);
 
-  int send_int = 10;
-  char d[256] = "sdfiusdnf";
-  send(cli_socket, d, sizeof(10), 0);
+  char d[256] = "works!";
+  write(cli_socket, d, sizeof(d));
 
   close(sockfd);
   return 0;

@@ -26,8 +26,8 @@ int main(int argc, char *argv[]) {
 
   //testing recv from server
   int recv_int;
-  char d[256] = "sdfiusdnf";
-  recv(sockfd, &d, sizeof(recv_int), 0);
+  char d[256];
+  recv(sockfd, &d, sizeof(d), 0);
   printf("Nice: %s\n", d);
   //
 
