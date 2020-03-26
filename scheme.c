@@ -18,7 +18,12 @@ int* mv_mult(int* A, int* x) {
 
 int* vm_mult(int* x, int* A) {
     static int y[n];
-    
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < m; j++) {
+            y[i] += A[i][j] * x[j];
+        }
+    }
+    return y;
 }
 
 keys Setup() {
