@@ -12,6 +12,13 @@
 #include <unistd.h>
 
 /*
+parameters:
+n = 2^20 = 1099511627776
+q = smallest prime greater than 2^40 = 2^40 + 15 = 1099511627791
+m = floor(1.1 * n * log(q)) = 33533428930592
+alpha = 1/(sqrt(n) * log^2(n)) = 1.2405925875935603e-09
+
+
 scheme includes setup, encrypt, decrypt
 
 all operations are done over the field Z_q, where q is some (large) prime
@@ -24,7 +31,14 @@ Setup takes in a security parameter lambda
 outputs keys as PK = (A, s^T * A + e^T) and SK = s
 
 Enc takes in PK and message M
+    samples r from uniform distribution of {0, 1} as a m matrix
+    interpret PK = (A, s^T * A + e^T) as (A, b^T)
+outputs ciphertext as CT = (Ar, b^Tr + M * floor(q / 2))
 
+Dec takes in SK and CT
+    interpret CT = (Ar, b^Tr + M * floor(q / 2)) as (u, v)
+    find w = ||v - s^TM||
+outputs message 0 if w < q / 4 and 1 otherwise
 */
 
 typedef struct {

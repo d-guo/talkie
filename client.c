@@ -25,8 +25,9 @@ int main(int argc, char *argv[]) {
   connection = connect(sockfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr));
 
   //testing recv from server
-  int recv_int;
+  int64_t recv_int = __INT64_MAX__;
   char d[256];
+  printf("%ld\n", recv_int);
   recv(sockfd, &d, sizeof(d), 0);
   printf("Nice: %s\n", d);
   //
