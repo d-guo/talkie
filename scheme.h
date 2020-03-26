@@ -48,7 +48,7 @@ outputs message 0 if w < q / 4 and 1 otherwise
 #define mu 0
 
 typedef struct {
-    int PK1[n][n];
+    int PK1[m][n];
     int PK2[n];
 } pub_key_tuple;
 
@@ -62,8 +62,9 @@ typedef struct {
     int SK[n];
 } keys;
 
-int* vv_add(int x[n], int y[n]);
-int* mv_mult(int A[n][n], int x[n]);
+int* vv_add(int* x, int* y);
+int* mv_mult(int* A, int* x);
+int* vm_mult(int* x, int* A);
 
 keys Setup();
 CT_tuple Enc(pub_key_tuple PK, int M);
