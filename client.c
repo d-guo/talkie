@@ -13,24 +13,56 @@ runs
 */
 
 int main(int argc, char *argv[]) {
-  int sockfd, connection;
-  struct sockaddr_in serv_addr, cli_addr;
+  int sockfd, connection, reception, M = 0;
+  struct sockaddr_in serv_addr;
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  if(sockfd < 0) {
+    fprintf(stderr, "ERROR opening socket\n");
+  }
 
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_port = htons(9002);
   serv_addr.sin_addr.s_addr = INADDR_ANY;
 
   connection = connect(sockfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr));
+  if(connection < 0) {
+    fprintf(stderr, "ERROR connecting to server\n");
+  }
 
-  //testing recv from server
-  int64_t recv_int = __INT64_MAX__;
-  char d[256];
-  printf("%ld\n", recv_int);
-  recv(sockfd, &d, sizeof(d), 0);
-  printf("Nice: %s\n", d);
-  //
+  static int PK1[n][n];
+  static int PK2[n];
+  reception = recv(sockfd, &PK1, sizeof(PK1), MSG_WAITALL);
+  if(reception < 0) {
+    fprintf(stderr, "ERROR receiving Public Key 1\n");
+  }
+  reception = recv(sockfd, &PK2, sizeof(PK2), MSG_WAITALL);
+  if(reception < 0) {
+    fprintf(stderr, "ERROR receiving Public Key 2\n");
+  }
+  static pub_key_tuple PK;
+  memcpy(PK.PK1, PK1, sizeof(PK1));
+  memcpy(PK.PK2, PK2, sizeof(PK2));
+
+  printf("Send messages (bits 0 or 1) to server or -1 to disconnect and shutdown server\n");
+  printf("Ciphertext saved in CT file\n");
+
+  static CT_tuple CT;
+  while(1) {
+    printf("Input bit: ");
+    fscanf(stdin, "%d", &M);
+    
+    if(M == -1) {
+      break;
+    }
+
+    //CT = Enc(PK, M);
+
+    //save CT into file
+
+    //send CT
+
+  }
 
   close(sockfd);
   return 0;

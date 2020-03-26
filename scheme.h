@@ -13,18 +13,18 @@
 
 /*
 parameters:
-n = 2^20 = 1099511627776
-q = smallest prime greater than 2^40 = 2^40 + 15 = 1099511627791
-m = floor(1.1 * n * log(q)) = 33533428930592
-alpha = 1/(sqrt(n) * log^2(n)) = 1.2405925875935603e-09
-
+n = 2^12 = 4096
+q = smallest prime greater than 2^24 = 2^24 + 43 = 16777259
+m = floor(1.1 * n * log(q)) = 74953
+alpha = 1/(sqrt(n) * log^2(n)) = 0.00022584298839036548
+mu = 0
 
 scheme includes setup, encrypt, decrypt
 
 all operations are done over the field Z_q, where q is some (large) prime
 messages are in {0, 1} (a single bit)
 
-Setup takes in a security parameter lambda
+Setup takes in a security parameter lambda (we fix this value)
     samples A from uniform distribution as n x m matrix
     samples e from error distribution (chosen later, probably discrete gaussian) as m-vector
     samples s from uniform distribution as n-vector
@@ -41,17 +41,31 @@ Dec takes in SK and CT
 outputs message 0 if w < q / 4 and 1 otherwise
 */
 
-typedef struct {
-    int* x;
-    int* y;
-} tuple;
+#define n 4096
+#define q 16777259
+#define m 74953
+#define alpha 0.00022584298839036548
+#define mu 0
 
 typedef struct {
-    tuple PK;
-    int* SK;
+    int PK1[n][n];
+    int PK2[n];
+} pub_key_tuple;
+
+typedef struct {
+    int CT1[n];
+    int CT2[n];
+} CT_tuple;
+
+typedef struct {
+    pub_key_tuple PK;
+    int SK[n];
 } keys;
 
-keys Setup(int lambda);
-tuple Enc(tuple PK, int M);
-int Dec(int* SK, tuple CT);
+int* vv_add(int x[n], int y[n]);
+int* mv_mult(int A[n][n], int x[n]);
+
+keys Setup();
+CT_tuple Enc(pub_key_tuple PK, int M);
+int Dec(int* SK, CT_tuple CT);
 #endif
