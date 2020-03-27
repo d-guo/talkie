@@ -30,24 +30,22 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "ERROR connecting to server\n");
   }
 
-  static int PK1[n][n];
-  static int PK2[n];
-  reception = recv(sockfd, &PK1, sizeof(PK1), MSG_WAITALL);
+  pub_key_tuple PK;
+  //IP
+  reception = recv(sockfd, PK.PK1, sizeof(PK.PK1), MSG_WAITALL);
   if(reception < 0) {
     fprintf(stderr, "ERROR receiving Public Key 1\n");
   }
-  reception = recv(sockfd, &PK2, sizeof(PK2), MSG_WAITALL);
+  reception = recv(sockfd, PK.PK2, sizeof(PK.PK2), MSG_WAITALL);
   if(reception < 0) {
     fprintf(stderr, "ERROR receiving Public Key 2\n");
   }
-  static pub_key_tuple PK;
-  memcpy(PK.PK1, PK1, sizeof(PK1));
-  memcpy(PK.PK2, PK2, sizeof(PK2));
 
   printf("Send messages (bits 0 or 1) to server or -1 to disconnect and shutdown server\n");
   printf("Ciphertext saved in CT file\n");
 
-  static CT_tuple CT;
+  CT_tuple CT;
+  printf("%d\n", CT.CT1[4095]);
   while(1) {
     printf("Input bit: ");
     fscanf(stdin, "%d", &M);

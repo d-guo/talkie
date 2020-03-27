@@ -25,19 +25,19 @@ all operations are done over the field Z_q, where q is some (large) prime
 messages are in {0, 1} (a single bit)
 
 Setup takes in a security parameter lambda (we fix this value)
-    samples A from uniform distribution as n x m matrix
-    samples e from error distribution (chosen later, probably discrete gaussian) as m-vector
+    samples A from uniform distribution as m x n matrix
+    samples e from error distribution (discrete gaussian mean mu variance alpha) as m-vector
     samples s from uniform distribution as n-vector
-outputs keys as PK = (A, s^T * A + e^T) and SK = s
+outputs keys as PK = (A, A * s + e^T) and SK = s
 
 Enc takes in PK and message M
     samples r from uniform distribution of {0, 1} as a m matrix
-    interpret PK = (A, s^T * A + e^T) as (A, b^T)
-outputs ciphertext as CT = (Ar, b^Tr + M * floor(q / 2))
+    interpret PK = (A, A * s + e^T) as (A, b^T)
+outputs ciphertext as CT = (r^T * A, b^T * r + M * floor(q / 2))
 
 Dec takes in SK and CT
-    interpret CT = (Ar, b^Tr + M * floor(q / 2)) as (u, v)
-    find w = ||v - s^TM||
+    interpret CT = (r^T * A, b^T * r + M * floor(q / 2)) as (u, v)
+    find w = ||v - s^T * u||
 outputs message 0 if w < q / 4 and 1 otherwise
 */
 
@@ -49,7 +49,7 @@ outputs message 0 if w < q / 4 and 1 otherwise
 
 typedef struct {
     int PK1[m][n];
-    int PK2[n];
+    int PK2[m];
 } pub_key_tuple;
 
 typedef struct {
