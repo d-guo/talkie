@@ -3,11 +3,20 @@ ARGS = -Wall -g
 
 all: server client
 
-server: server.c
-	$(CC) $(ARGS) server.c -o server
+scheme.o: scheme.c
+	$(CC) $(ARGS) -c scheme.c
 
-client: client.c
-	$(CC) $(ARGS) client.c -o client
+server.o: server.c
+	$(CC) $(ARGS) -c server.c
+
+server: server.o scheme.o
+	$(CC) $(ARGS) server.o scheme.o -o server
+
+client.o: client.c
+	$(CC) $(ARGS) -c client.c
+
+client: client.o scheme.o
+	$(CC) $(ARGS) client.o scheme.o -o client
 
 clean:
-	rm -f server client
+	rm -f server client *.o

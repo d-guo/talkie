@@ -41,14 +41,17 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "ERROR on accept\n");
   }
 
-  static int PK1[n][n];
-  static int PK2[n];
+  static int A[m][n];
+  static int b[m];
   //public key
-  write(cli_socket, PK1, sizeof(PK1));
-  write(cli_socket, PK2, sizeof(PK2));
+  write(cli_socket, A, sizeof(A));
+  write(cli_socket, b, sizeof(b));
+  printf("SDFSDF");
 
   static CT_tuple CT;
   while(1) {
+    //check number of sockets and shutdown if 0
+    
     //receive CT
     reception = recv(sockfd, &CT.CT1, sizeof(CT.CT1), MSG_WAITALL);
     reception = recv(sockfd, &CT.CT2, sizeof(CT.CT2), MSG_WAITALL);

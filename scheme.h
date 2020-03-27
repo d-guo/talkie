@@ -24,9 +24,9 @@ scheme includes setup, encrypt, decrypt
 all operations are done over the field Z_q, where q is some (large) prime
 messages are in {0, 1} (a single bit)
 
-Setup takes in a security parameter lambda (we fix this value)
+Setup takes in a security parameter lambda (we fix this value as n above)
     samples A from uniform distribution as m x n matrix
-    samples e from error distribution (discrete gaussian mean mu variance alpha) as m-vector
+    samples e from error distribution (discrete gaussian with mean mu variance alpha) as m-vector
     samples s from uniform distribution as n-vector
 outputs keys as PK = (A, A * s + e^T) and SK = s
 
@@ -48,13 +48,13 @@ outputs message 0 if w < q / 4 and 1 otherwise
 #define mu 0
 
 typedef struct {
-    int PK1[m][n];
-    int PK2[m];
+    int A[m][n];
+    int b[m];
 } pub_key_tuple;
 
 typedef struct {
     int CT1[n];
-    int CT2[n];
+    int CT2;
 } CT_tuple;
 
 typedef struct {
@@ -62,9 +62,9 @@ typedef struct {
     int SK[n];
 } keys;
 
-int* vv_add(int* x, int* y);
-int* mv_mult(int* A, int* x);
-int* vm_mult(int* x, int* A);
+int* vv_add(int x[m], int y[m]);
+int* mv_mult(int A[m][n], int x[n]);
+int* vm_mult(int x[m], int A[m][n]);
 
 keys Setup();
 CT_tuple Enc(pub_key_tuple PK, int M);
