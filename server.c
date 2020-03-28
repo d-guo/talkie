@@ -41,28 +41,31 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "ERROR on accept\n");
   }
 
-  static int A[m][n];
-  static int b[m];
-  //public key
-  write(cli_socket, A, sizeof(A));
-  write(cli_socket, b, sizeof(b));
-  printf("SDFSDF");
+  //generate keys
+  keys PS = Setup();
+  write(cli_socket, &PS.PK.A, sizeof(PS.PK.A));
+  write(cli_socket, &PS.PK.b, sizeof(PS.PK.b));
 
-  static CT_tuple CT;
+  CT_tuple CT;
   while(1) {
     //check number of sockets and shutdown if 0
+
     
     //receive CT
     reception = recv(sockfd, &CT.CT1, sizeof(CT.CT1), MSG_WAITALL);
+    if(reception < 0) {
+      fprintf(stderr, "ERROR receiving Ciphertext 1\n");
+    }
     reception = recv(sockfd, &CT.CT2, sizeof(CT.CT2), MSG_WAITALL);
+    if(reception < 0) {
+      fprintf(stderr, "ERROR receiving Ciphertext 2\n");
+    }
 
     //save CT into file
 
     //decrypt CT and print message
-
-
-
-
+    M = Dec(PS.SK, CT);
+    printf("%d\n", M);
   }
 
   close(sockfd);

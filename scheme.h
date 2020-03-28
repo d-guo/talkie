@@ -13,10 +13,10 @@
 
 /*
 parameters:
-n = 2^12 = 4096
-q = smallest prime greater than 2^24 = 2^24 + 43 = 16777259
-m = floor(1.1 * n * log(q)) = 74953
-alpha = 1/(sqrt(n) * log^2(n)) = 0.00022584298839036548
+n = 2^10 = 1024 (in practice would be much larger)
+q = smallest prime greater than 2^24 = 2^24 + 7 = 1048583
+m = floor(1.1 * n * log(q)) = 15615
+alpha = 1/(sqrt(n) * log^2(n)) = 0.0006504278065642525
 mu = 0
 
 scheme includes setup, encrypt, decrypt
@@ -41,10 +41,10 @@ Dec takes in SK and CT
 outputs message 0 if w < q / 4 and 1 otherwise
 */
 
-#define n 4096
-#define q 16777259
-#define m 74953
-#define alpha 0.00022584298839036548
+#define n 8
+#define q 1048583
+#define m 100
+#define alpha 0.0006504278065642525
 #define mu 0
 
 typedef struct {
@@ -63,6 +63,8 @@ typedef struct {
 } keys;
 
 int* vv_add(int x[m], int y[m]);
+int vv_mult_m(int x[m], int y[m]);
+int vv_mult_n(int x[n], int y[n]);
 int* mv_mult(int A[m][n], int x[n]);
 int* vm_mult(int x[m], int A[m][n]);
 
