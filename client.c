@@ -39,6 +39,7 @@ int main(int argc, char *argv[]) {
   if(reception < 0) {
     fprintf(stderr, "ERROR receiving Public Key 2\n");
   }
+  printf("%d\n", PK.A[0][0]);
 
   printf("Send messages (bits 0 or 1) to server or -1 to disconnect and shutdown server\n");
   printf("Ciphertext saved in CT file\n");
