@@ -82,7 +82,7 @@ CT_tuple Enc(pub_key_tuple PK, int M) {
 
     int* r = malloc(m * sizeof(int));
     for(int i = 0 ; i < m; i++) {
-        *(r + i) = modq(rand());
+        *(r + i) = rand() % 2;
     }
 
     mv_mult(PK.A, r, CT.CT1);
