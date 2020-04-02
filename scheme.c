@@ -1,92 +1,111 @@
 #include "scheme.h"
 
-int* vv_add(int x[m], int y[m]) {
-    static int z[m];
+int* vv_add(int* x, int* y, int* z) {
     for(int i = 0; i < m; i++) {
-        z[i] = x[i] + y[i];
-    }
-    for(int i = 0; i < m; i++) {
-        z[i] = z[i] % q;
+        *(z + i) = modq(*(x + i) + *(y + i));
     }
     return z;
 }
 
-int vv_mult_m(int x[m], int y[m]) {
+int vv_mult_m(int* x, int* y) {
     int z = 0;
     for(int i = 0; i < m; i++) {
-        z += x[i] * y[i];
+        z += *(x + i) * *(y + i);
     }
-    return z % q;
+    return modq(z);
 }
 
-int vv_mult_n(int x[n], int y[n]) {
+int vv_mult_n(int* x, int* y) {
     int z = 0;
     for(int i = 0; i < n; i++) {
-        z += x[i] * y[i];
+        z += *(x + i) * *(y + i);
     }
-    return z % q;
+    return modq(z);
 }
 
-int* mv_mult(int A[m][n], int x[n]) {
-    static int y[m];
+int* mv_mult(int* A, int* x, int* y) {
     for(int i = 0; i < m; i++) {
         for(int j = 0; j < n; j++) {
-            y[i] += A[i][j] * x[j];
+            *(y + i) += *(A + i * n + j) * *(x + j);
         }
     }
     for(int i = 0; i < m; i++) {
-        y[i] = y[i] % q;
+        *(y + i) = modq(*(y + i));
     }
     return y;
 }
 
-int* vm_mult(int x[m], int A[m][n]) {
-    static int y[n];
+int* vm_mult(int* x, int* A, int* y) {
     for(int i = 0; i < n; i++) {
         for(int j = 0; j < m; j++) {
-            y[i] += A[i][j] * x[j];
+            *(y + i) += *(A + j * n + i) * *(x + j);
         }
     }
     for(int i = 0; i < n; i++) {
-        y[i] = y[i] % q;
+        *(y + i) = modq(*(y + i));
     }
     return y;
 }
 
 keys Setup() {
-    static keys PS_keys;
+    keys PS_keys;
+    PS_keys.PK.A = malloc(m * n * sizeof(int));
+    PS_keys.PK.b = malloc(m * sizeof(int));
+    PS_keys.SK = malloc(n * sizeof(int));
+    
     for(int i = 0; i < m; i++) {
         for(int j = 0; j < n; j++) {
-            PS_keys.PK.A[i][j] = rand() % q;
+            *(PS_keys.PK.A + i * n + j) = modq(rand());
         }
     }
     for(int i = 0; i < n; i++) {
-        PS_keys.SK[i] = rand() % q;
+        *(PS_keys.SK + i) = modq(rand());
     }
+
     //IP
-    static int e[m];
+    int* e = malloc(m * sizeof(int));
     for(int i = 0 ; i < m; i++) {
-        e[i] = 0;
+        *(e + i) = 0;
     }
-    memcpy(PS_keys.PK.b, vv_add(mv_mult(PS_keys.PK.A, PS_keys.SK), e), sizeof(PS_keys.PK.b));
+
+    int* A_SK = malloc(m * sizeof(int));
+    mv_mult(PS_keys.PK.A, PS_keys.SK, A_SK);
+    vv_add(A_SK, e, PS_keys.PK.b);
+    free(A_SK);
+    
     return PS_keys;
 }
 
 CT_tuple Enc(pub_key_tuple PK, int M) {
-    static CT_tuple CT;
-    static int r[m];
+    CT_tuple CT;
+    CT.CT1 = malloc(n * sizeof(int));
+
+    int* r = malloc(m * sizeof(int));
     for(int i = 0 ; i < m; i++) {
-        r[i] = rand() % q;
+        *(r + i) = modq(rand());
     }
-    memcpy(CT.CT1, vm_mult(r, PK.A), sizeof(CT.CT1));
-    CT.CT2 = vv_mult_m(PK.b, r) + (int) (q / 2) * M;
+
+    vm_mult(r, PK.A, CT.CT1);
+    CT.CT2 = modq(vv_mult_m(PK.b, r) + (int) (q / 2) * M);
+
+    free(r);
+
     return CT;
 }
 
 int Dec(int* SK, CT_tuple CT) {
-    int w = (CT.CT2 - vv_mult_n(CT.CT1, SK)) % q;
+    int w = modq(CT.CT2 - vv_mult_n(CT.CT1, SK));
     if(w < (int) (q / 4)) {
+        printf("%d\n", w);
         return 0;
     }
+    printf("%d\n", w);
     return 1;
+}
+
+int main() {
+    keys PS_keys = Setup();
+    CT_tuple CT = Enc(PS_keys.PK, 0);
+    int M = Dec(PS_keys.SK, CT);
+    printf("%d\n", M);
 }

@@ -31,7 +31,7 @@ Setup takes in a security parameter lambda (we fix this value as n above)
 outputs keys as PK = (A, A * s + e^T) and SK = s
 
 Enc takes in PK and message M
-    samples r from uniform distribution of {0, 1} as a m matrix
+    samples r from uniform distribution of {0, 1} as a m-vector
     interpret PK = (A, A * s + e^T) as (A, b^T)
 outputs ciphertext as CT = (r^T * A, b^T * r + M * floor(q / 2))
 
@@ -41,32 +41,38 @@ Dec takes in SK and CT
 outputs message 0 if w < q / 4 and 1 otherwise
 */
 
-#define n 8
+#define n 1024
 #define q 1048583
-#define m 100
+#define m 15615
 #define alpha 0.0006504278065642525
 #define mu 0
 
 typedef struct {
-    int A[m][n];
-    int b[m];
+    int* A; //m x n
+    int* b; //m
 } pub_key_tuple;
 
 typedef struct {
-    int CT1[n];
+    int* CT1; //n
     int CT2;
 } CT_tuple;
 
 typedef struct {
     pub_key_tuple PK;
-    int SK[n];
+    int* SK; //n
 } keys;
 
-int* vv_add(int x[m], int y[m]);
-int vv_mult_m(int x[m], int y[m]);
-int vv_mult_n(int x[n], int y[n]);
-int* mv_mult(int A[m][n], int x[n]);
-int* vm_mult(int x[m], int A[m][n]);
+//perform operation and put into last parameter
+int* vv_add(int* x, int* y, int* z); // m-vectors
+int vv_mult_m(int* x, int* y); // m-vectors
+int vv_mult_n(int* x, int* y); // n-vectors
+int* mv_mult(int* A, int* x, int* y); // m x n matrix n-vector
+int* vm_mult(int* x, int* A, int* y); // m-vector, m x n matrix
+
+//so apparently ?? the % operator gives the remainder NOT the mod, so -1 % 2 = -1, not 1 which is bad for us
+int modq(int x) {
+    return (int) (((long long int) x + q) % q);
+}
 
 keys Setup();
 CT_tuple Enc(pub_key_tuple PK, int M);
