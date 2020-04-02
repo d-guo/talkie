@@ -57,19 +57,19 @@ int main(int argc, char *argv[]) {
     printf("Input bit: ");
     fscanf(stdin, "%d", &M);
     
+    //shutdown if M = -1
     if(M == -1) {
+      CT = Enc(PK, 0);
+      write(sockfd, CT.CT1, n * sizeof(int));
+      write(sockfd, &M, sizeof(int));
       break;
     }
 
     CT = Enc(PK, M);
 
-    //save CT into file
-
     //send CT
     write(sockfd, CT.CT1, n * sizeof(int));
     write(sockfd, &CT.CT2, sizeof(int));
-
-
   }
 
   close(sockfd);

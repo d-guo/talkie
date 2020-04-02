@@ -49,10 +49,7 @@ int main(int argc, char *argv[]) {
   CT_tuple CT;
   CT.CT1 = malloc(n * sizeof(int));
 
-  while(1) {
-    //check number of sockets and shutdown if 0
-    
-    
+  while(1) {    
     //receive CT
     reception = recv(cli_socket, CT.CT1, n * sizeof(int), MSG_WAITALL);
     if(reception < 0) {
@@ -61,6 +58,11 @@ int main(int argc, char *argv[]) {
     reception = recv(cli_socket, &CT.CT2, sizeof(int), MSG_WAITALL);
     if(reception < 0) {
       fprintf(stderr, "ERROR receiving Ciphertext 2\n");
+    }
+
+    //shutdown if given CT2 -1
+    if(CT.CT2 == -1) {
+      break;
     }
 
     //decrypt CT and print message
