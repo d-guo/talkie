@@ -31,38 +31,40 @@ int main(int argc, char *argv[]) {
   }
 
   pub_key_tuple PK;
-  reception = recv(sockfd, &PK.A, sizeof(PK.A), MSG_WAITALL);
+  PK.A = malloc(n * m * sizeof(int));
+  PK.b = malloc(m * sizeof(int));
+  reception = recv(sockfd, PK.A, n * m * sizeof(int), MSG_WAITALL);
   if(reception < 0) {
     fprintf(stderr, "ERROR receiving Public Key 1\n");
   }
-  reception = recv(sockfd, &PK.b, sizeof(PK.b), MSG_WAITALL);
+  reception = recv(sockfd, PK.b, m * sizeof(int), MSG_WAITALL);
   if(reception < 0) {
     fprintf(stderr, "ERROR receiving Public Key 2\n");
   }
-  printf("%d\n", PK.A[0][0]);
 
   printf("Send messages (bits 0 or 1) to server or -1 to disconnect and shutdown server\n");
   printf("Ciphertext saved in CT file\n");
 
   CT_tuple CT;
-  while(1) {
+  CT.CT1 = malloc(n * sizeof(int));
+  //while(1) {
     printf("Input bit: ");
     fscanf(stdin, "%d", &M);
     
-    if(M == -1) {
-      break;
-    }
+    //if(M == -1) {
+    //  break;
+    //}
 
     CT = Enc(PK, M);
 
     //save CT into file
 
     //send CT
-    write(sockfd, &CT.CT1, sizeof(CT.CT1));
-    write(sockfd, &CT.CT2, sizeof(CT.CT2));
+    write(sockfd, CT.CT1, n * sizeof(int));
+    write(sockfd, &CT.CT2, sizeof(int));
 
 
-  }
+  //}
 
   close(sockfd);
   return 0;

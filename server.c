@@ -9,7 +9,7 @@ server sends
 1. public key
 
 runs
-1. setup(\lambda) -> PK, SK
+1. setup() -> PK, SK
 2. decrypt(SK, CT) -> M
 */
 
@@ -43,20 +43,22 @@ int main(int argc, char *argv[]) {
 
   //generate keys
   keys PS = Setup();
-  write(cli_socket, &PS.PK.A, sizeof(PS.PK.A));
-  write(cli_socket, &PS.PK.b, sizeof(PS.PK.b));
+  write(cli_socket, PS.PK.A, n * m * sizeof(int));
+  write(cli_socket, PS.PK.b, m * sizeof(int));
 
   CT_tuple CT;
-  while(1) {
+  CT.CT1 = malloc(n * sizeof(int));
+
+  //while(1) {
     //check number of sockets and shutdown if 0
 
     
     //receive CT
-    reception = recv(sockfd, &CT.CT1, sizeof(CT.CT1), MSG_WAITALL);
+    reception = recv(sockfd, CT.CT1, n * sizeof(int), MSG_WAITALL);
     if(reception < 0) {
       fprintf(stderr, "ERROR receiving Ciphertext 1\n");
     }
-    reception = recv(sockfd, &CT.CT2, sizeof(CT.CT2), MSG_WAITALL);
+    reception = recv(sockfd, &CT.CT2, sizeof(int), MSG_WAITALL);
     if(reception < 0) {
       fprintf(stderr, "ERROR receiving Ciphertext 2\n");
     }
@@ -66,7 +68,7 @@ int main(int argc, char *argv[]) {
     //decrypt CT and print message
     M = Dec(PS.SK, CT);
     printf("%d\n", M);
-  }
+  //}
 
   close(sockfd);
   return 0;

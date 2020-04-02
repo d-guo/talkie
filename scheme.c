@@ -41,6 +41,10 @@ int* vm_mult(int* x, int* A, int* y) {
     return y;
 }
 
+int modq(long long int x) {
+    return (int) (((x % q) + q) % q);
+}
+
 keys Setup() {
     keys PS_keys;
     PS_keys.PK.A = malloc(n * m * sizeof(int));
@@ -91,40 +95,4 @@ int Dec(int* SK, CT_tuple CT) {
         return 0;
     }
     return 1;
-}
-
-int main() {
-    keys PS_keys = Setup();
-
-    CT_tuple CT = Enc(PS_keys.PK, 1);
-    int M = Dec(PS_keys.SK, CT);
-    printf("%d\n", M);
-
-    CT = Enc(PS_keys.PK, 0);
-    M = Dec(PS_keys.SK, CT);
-    printf("%d\n", M);
-
-    CT = Enc(PS_keys.PK, 1);
-    M = Dec(PS_keys.SK, CT);
-    printf("%d\n", M);
-
-    CT = Enc(PS_keys.PK, 0);
-    M = Dec(PS_keys.SK, CT);
-    printf("%d\n", M);
-
-    CT = Enc(PS_keys.PK, 1);
-    M = Dec(PS_keys.SK, CT);
-    printf("%d\n", M);
-    
-    CT = Enc(PS_keys.PK, 0);
-    M = Dec(PS_keys.SK, CT);
-    printf("%d\n", M);
-
-    CT = Enc(PS_keys.PK, 1);
-    M = Dec(PS_keys.SK, CT);
-    printf("%d\n", M);
-
-    CT = Enc(PS_keys.PK, 0);
-    M = Dec(PS_keys.SK, CT);
-    printf("%d\n", M);
 }
