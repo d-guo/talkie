@@ -116,8 +116,6 @@ int main() {
             *(A + i * m + j) = modq(rand());
         }
     }
-    *A = 1;
-    *(A + 1) = 2;
 
     for(int i = 0 ; i < m; i++) {
         *(r + i) = modq(rand());
@@ -149,18 +147,6 @@ int main() {
     printf("%d\n", M);
 
     CT = Enc(PS_keys.PK, 0);
-    M = Dec(PS_keys.SK, CT);
-    printf("%d\n", M);
-
-    CT = Enc(PS_keys.PK, 0);
-    M = Dec(PS_keys.SK, CT);
-    printf("%d\n", M);
-
-    CT = Enc(PS_keys.PK, 0);
-    M = Dec(PS_keys.SK, CT);
-    printf("%d\n", M);
-
-    CT = Enc(PS_keys.PK, 1);
     M = Dec(PS_keys.SK, CT);
     printf("%d\n", M);
 
