@@ -1,5 +1,5 @@
 #include "scheme.h"
-int* r;
+
 int* vv_add(int* x, int* y, int* z) {
     for(int i = 0; i < m; i++) {
         *(z + i) = modq((long long int) *(x + i) + *(y + i));
@@ -74,12 +74,11 @@ CT_tuple Enc(pub_key_tuple PK, int M) {
     CT_tuple CT;
     CT.CT1 = malloc(n * sizeof(int));
 
-    //int* r = malloc(m * sizeof(int));
+    int* r = malloc(m * sizeof(int));
     for(int i = 0 ; i < m; i++) {
-        //*(r + i) = modq((long long int) rand());
+        *(r + i) = modq((long long int) rand());
     }
     mv_mult(PK.A, r, CT.CT1);
-    printf("HUHL %d\n", modq((long long int) vv_mult_m(PK.b, r)));
     CT.CT2 = modq((long long int) vv_mult_m(PK.b, r) + M * (int) (q / 2));
     //free(r);
 
@@ -87,36 +86,15 @@ CT_tuple Enc(pub_key_tuple PK, int M) {
 }
 
 int Dec(int* SK, CT_tuple CT) {
-    printf("BRUHL %d\n", vv_mult_n(SK, CT.CT1));
     int w = modq((long long int) CT.CT2 - vv_mult_n(SK, CT.CT1));
     if(w < (int) (q / 4)) {
-        //printf("w: %d\n", w);
         return 0;
     }
-    //printf("w: %d\n", w);
     return 1;
 }
 
 int main() {
-    r = malloc(m * sizeof(int));
-
-    int* temp1 = malloc(m * sizeof(int));
-    int* temp2 = malloc(n * sizeof(int));
-
-    for(int i = 0 ; i < m; i++) {
-        *(r + i) = modq((long long int) rand());
-    }
-
-    
     keys PS_keys = Setup();
-
-    vm_mult(PS_keys.SK, PS_keys.PK.A, temp1);
-    int first = vv_mult_m(temp1, r);
-    printf("%d\n", first);
-    mv_mult(PS_keys.PK.A, r, temp2);
-    int second = vv_mult_n(PS_keys.SK, temp2);
-    printf("%d\n", second);
-    printf("\n");
 
     CT_tuple CT = Enc(PS_keys.PK, 1);
     int M = Dec(PS_keys.SK, CT);
