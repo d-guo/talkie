@@ -84,8 +84,8 @@ CT_tuple Enc(pub_key_tuple PK, int M) {
     for(int i = 0 ; i < m; i++) {
         *(r + i) = rand() % 2;
     }
-
     mv_mult(PK.A, r, CT.CT1);
+    
     CT.CT2 = modq(vv_mult_m(PK.b, r) + M * (int) (q / 2));
 
     free(r);
@@ -96,10 +96,8 @@ CT_tuple Enc(pub_key_tuple PK, int M) {
 int Dec(int* SK, CT_tuple CT) {
     int w = modq(CT.CT2 - vv_mult_n(SK, CT.CT1));
     if(w < (int) (q / 4)) {
-        printf("%d\n", w);
         return 0;
     }
-    printf("%d\n", w);
     return 1;
 }
 
@@ -132,7 +130,7 @@ int main() {
     int second = vv_mult_n(s, temp2);
     printf("%d\n", second);
 
-    /*
+    
     keys PS_keys = Setup();
     CT_tuple CT = Enc(PS_keys.PK, 1);
     int M = Dec(PS_keys.SK, CT);
@@ -146,12 +144,12 @@ int main() {
     M = Dec(PS_keys.SK, CT);
     printf("%d\n", M);
 
-    CT = Enc(PS_keys.PK, 0);
+    CT = Enc(PS_keys.PK, 1);
     M = Dec(PS_keys.SK, CT);
     printf("%d\n", M);
 
     CT = Enc(PS_keys.PK, 0);
     M = Dec(PS_keys.SK, CT);
     printf("%d\n", M);
-    */
+    
 }
