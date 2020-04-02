@@ -63,7 +63,7 @@ keys Setup() {
     //IP
     int* e = malloc(m * sizeof(int));
     for(int i = 0 ; i < m; i++) {
-        *(e + i) = modq((long long int) (alpha * alpha * modq(rand())));
+        *(e + i) = modq((long long int) (alpha * modq(rand()) / 25));
     }
     //free(e);
 
