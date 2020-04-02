@@ -19,13 +19,13 @@ int main(int argc, char *argv[]) {
   struct sockaddr_in serv_addr, cli_addr;
   socklen_t clilen;
 
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   if(sockfd < 0) {
     fprintf(stderr, "ERROR opening socket\n");
   }
 
   serv_addr.sin_family = AF_INET;
-  serv_addr.sin_port = htons(9002);
+  serv_addr.sin_port = htons(8080);
   serv_addr.sin_addr.s_addr = INADDR_ANY;
 
   binding = bind(sockfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr));
@@ -54,11 +54,11 @@ int main(int argc, char *argv[]) {
 
     
     //receive CT
-    reception = recv(sockfd, CT.CT1, n * sizeof(int), MSG_WAITALL);
+    reception = recv(cli_socket, CT.CT1, n * sizeof(int), MSG_WAITALL);
     if(reception < 0) {
       fprintf(stderr, "ERROR receiving Ciphertext 1\n");
     }
-    reception = recv(sockfd, &CT.CT2, sizeof(int), MSG_WAITALL);
+    reception = recv(cli_socket, &CT.CT2, sizeof(int), MSG_WAITALL);
     if(reception < 0) {
       fprintf(stderr, "ERROR receiving Ciphertext 2\n");
     }
