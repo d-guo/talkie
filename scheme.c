@@ -112,4 +112,28 @@ int main() {
     CT = Enc(PS_keys.PK, 0);
     M = Dec(PS_keys.SK, CT);
     printf("%d\n", M);
+
+    CT = Enc(PS_keys.PK, 0);
+    M = Dec(PS_keys.SK, CT);
+    printf("%d\n", M);
+
+    CT = Enc(PS_keys.PK, 0);
+    M = Dec(PS_keys.SK, CT);
+    printf("%d\n", M);
+
+    CT = Enc(PS_keys.PK, 0);
+    M = Dec(PS_keys.SK, CT);
+    printf("%d\n", M);
+
+    CT = Enc(PS_keys.PK, 0);
+    M = Dec(PS_keys.SK, CT);
+    printf("%d\n", M);
+
+    CT = Enc(PS_keys.PK, 1);
+    M = Dec(PS_keys.SK, CT);
+    printf("%d\n", M);
+
+    CT = Enc(PS_keys.PK, 0);
+    M = Dec(PS_keys.SK, CT);
+    printf("%d\n", M);
 }
