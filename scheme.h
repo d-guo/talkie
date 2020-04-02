@@ -70,8 +70,8 @@ int* mv_mult(int* A, int* x, int* y); // n x m matrix m-vector
 int* vm_mult(int* x, int* A, int* y); // n-vector, n x m matrix
 
 //so apparently ?? the % operator gives the remainder NOT the mod, so -1 % 2 = -1, not 1 which is bad for us
-int modq(int x) {
-    return (int) ((((long long int) x % q) + q) % q);
+int modq(long long int x) {
+    return (int) (((x % q) + q) % q);
 }
 
 keys Setup();
