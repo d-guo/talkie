@@ -14,7 +14,7 @@ runs
 
 int main(int argc, char *argv[]) {
   int sockfd, connection, reception = 0;
-  //int M = 0;
+  int M = 0;
   struct sockaddr_in serv_addr;
 
   sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -53,15 +53,15 @@ int main(int argc, char *argv[]) {
 
   CT_tuple CT;
   CT.CT1 = malloc(n * sizeof(int));
-  //while(1) {
-    //printf("Input bit: ");
-    //fscanf(stdin, "%d", &M);
+  while(1) {
+    printf("Input bit: ");
+    fscanf(stdin, "%d", &M);
     
-    //if(M == -1) {
-    //  break;
-    //}
+    if(M == -1) {
+      break;
+    }
 
-    CT = Enc(PK, 0);
+    CT = Enc(PK, M);
 
     //save CT into file
 
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
     write(sockfd, &CT.CT2, sizeof(int));
 
 
-  //}
+  }
 
   close(sockfd);
   return 0;

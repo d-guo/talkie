@@ -49,9 +49,9 @@ int main(int argc, char *argv[]) {
   CT_tuple CT;
   CT.CT1 = malloc(n * sizeof(int));
 
-  //while(1) {
+  while(1) {
     //check number of sockets and shutdown if 0
-
+    
     
     //receive CT
     reception = recv(cli_socket, CT.CT1, n * sizeof(int), MSG_WAITALL);
@@ -63,12 +63,10 @@ int main(int argc, char *argv[]) {
       fprintf(stderr, "ERROR receiving Ciphertext 2\n");
     }
 
-    //save CT into file
-
     //decrypt CT and print message
     M = Dec(PS.SK, CT);
     printf("%d\n", M);
-  //}
+  }
 
   close(sockfd);
   return 0;
