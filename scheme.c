@@ -63,8 +63,9 @@ keys Setup() {
     //IP
     int* e = malloc(m * sizeof(int));
     for(int i = 0 ; i < m; i++) {
-        *(e + i) = 0;
+        *(e + i) = modq((long long int) (alpha * alpha * modq(rand())));
     }
+    //free(e);
 
     int* SK_A = malloc(m * sizeof(int));
     vm_mult(PS_keys.SK, PS_keys.PK.A, SK_A);
@@ -80,7 +81,7 @@ CT_tuple Enc(pub_key_tuple PK, int M) {
 
     int* r = malloc(m * sizeof(int));
     for(int i = 0 ; i < m; i++) {
-        *(r + i) = modq((long long int) rand());
+        *(r + i) = rand() % 2;
     }
     mv_mult(PK.A, r, CT.CT1);
     CT.CT2 = modq((long long int) vv_mult_m(PK.b, r) + M * (int) (q / 2));

@@ -27,7 +27,7 @@ messages are in {0, 1} (a single bit)
 
 Setup takes in a security parameter lambda (we fix this value as n above)
     samples A from uniform distribution as n x m matrix
-    samples e from error distribution (discrete gaussian with mean mu variance alpha) as m-vector
+    samples e from error distribution (discrete gaussian with mean mu variance alpha) as m-vector // we use a scaled uniform distribution for simplicity of correctness
     samples s from uniform distribution as n-vector
 outputs keys as PK = (A, s^T * A + e^T) and SK = s
 
