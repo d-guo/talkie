@@ -1,5 +1,5 @@
 #include "scheme.h"
-
+int* r;
 int* vv_add(int* x, int* y, int* z) {
     for(int i = 0; i < m; i++) {
         *(z + i) = modq((long long int) *(x + i) + *(y + i));
@@ -65,7 +65,7 @@ keys Setup() {
     int* SK_A = malloc(m * sizeof(int));
     vm_mult(PS_keys.SK, PS_keys.PK.A, SK_A);
     vv_add(SK_A, e, PS_keys.PK.b);
-    free(SK_A);
+    //free(SK_A);
     
     return PS_keys;
 }
@@ -74,20 +74,20 @@ CT_tuple Enc(pub_key_tuple PK, int M) {
     CT_tuple CT;
     CT.CT1 = malloc(n * sizeof(int));
 
-    int* r = malloc(m * sizeof(int));
+    //int* r = malloc(m * sizeof(int));
     for(int i = 0 ; i < m; i++) {
-        *(r + i) = rand() % 2;
+        //*(r + i) = modq((long long int) rand());
     }
     mv_mult(PK.A, r, CT.CT1);
-    
+    printf("HUHL %d\n", modq((long long int) vv_mult_m(PK.b, r)));
     CT.CT2 = modq((long long int) vv_mult_m(PK.b, r) + M * (int) (q / 2));
-
-    free(r);
+    //free(r);
 
     return CT;
 }
 
 int Dec(int* SK, CT_tuple CT) {
+    printf("BRUHL %d\n", vv_mult_n(SK, CT.CT1));
     int w = modq((long long int) CT.CT2 - vv_mult_n(SK, CT.CT1));
     if(w < (int) (q / 4)) {
         //printf("w: %d\n", w);
@@ -98,25 +98,13 @@ int Dec(int* SK, CT_tuple CT) {
 }
 
 int main() {
-    int* A = malloc(n * m * sizeof(int));
-    int* r = malloc(m * sizeof(int));
-    int* s = malloc(n * sizeof(int));
+    r = malloc(m * sizeof(int));
 
     int* temp1 = malloc(m * sizeof(int));
     int* temp2 = malloc(n * sizeof(int));
 
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < m; j++) {
-            *(A + i * m + j) = modq((long long int) rand());
-        }
-    }
-
     for(int i = 0 ; i < m; i++) {
         *(r + i) = modq((long long int) rand());
-    }
-
-    for(int i = 0 ; i < n; i++) {
-        *(s + i) = modq((long long int) rand());
     }
 
     
