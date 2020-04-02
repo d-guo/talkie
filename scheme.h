@@ -25,18 +25,18 @@ all operations are done over the field Z_q, where q is some (large) prime
 messages are in {0, 1} (a single bit)
 
 Setup takes in a security parameter lambda (we fix this value as n above)
-    samples A from uniform distribution as m x n matrix
+    samples A from uniform distribution as n x m matrix
     samples e from error distribution (discrete gaussian with mean mu variance alpha) as m-vector
     samples s from uniform distribution as n-vector
-outputs keys as PK = (A, A * s + e^T) and SK = s
+outputs keys as PK = (A, s^T * A + e^T) and SK = s
 
 Enc takes in PK and message M
     samples r from uniform distribution of {0, 1} as a m-vector
-    interpret PK = (A, A * s + e^T) as (A, b^T)
-outputs ciphertext as CT = (r^T * A, b^T * r + M * floor(q / 2))
+    interpret PK = (A, s^T * A + e^T) as (A, b^T)
+outputs ciphertext as CT = (A * r, b^T * r + M * floor(q / 2))
 
 Dec takes in SK and CT
-    interpret CT = (r^T * A, b^T * r + M * floor(q / 2)) as (u, v)
+    interpret CT = (A * r, b^T * r + M * floor(q / 2)) as (u, v)
     find w = ||v - s^T * u||
 outputs message 0 if w < q / 4 and 1 otherwise
 */
@@ -48,7 +48,7 @@ outputs message 0 if w < q / 4 and 1 otherwise
 #define mu 0
 
 typedef struct {
-    int* A; //m x n
+    int* A; //n x m
     int* b; //m
 } pub_key_tuple;
 
@@ -66,8 +66,8 @@ typedef struct {
 int* vv_add(int* x, int* y, int* z); // m-vectors
 int vv_mult_m(int* x, int* y); // m-vectors
 int vv_mult_n(int* x, int* y); // n-vectors
-int* mv_mult(int* A, int* x, int* y); // m x n matrix n-vector
-int* vm_mult(int* x, int* A, int* y); // m-vector, m x n matrix
+int* mv_mult(int* A, int* x, int* y); // n x m matrix m-vector
+int* vm_mult(int* x, int* A, int* y); // n-vector, n x m matrix
 
 //so apparently ?? the % operator gives the remainder NOT the mod, so -1 % 2 = -1, not 1 which is bad for us
 int modq(int x) {

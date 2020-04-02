@@ -24,24 +24,24 @@ int vv_mult_n(int* x, int* y) {
 }
 
 int* mv_mult(int* A, int* x, int* y) {
-    for(int i = 0; i < m; i++) {
-        for(int j = 0; j < n; j++) {
-            *(y + i) += *(A + i * n + j) * *(x + j);
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < m; j++) {
+            *(y + i) += *(A + i * m + j) * *(x + j);
         }
     }
-    for(int i = 0; i < m; i++) {
+    for(int i = 0; i < n; i++) {
         *(y + i) = modq(*(y + i));
     }
     return y;
 }
 
 int* vm_mult(int* x, int* A, int* y) {
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < m; j++) {
-            *(y + i) += *(A + j * n + i) * *(x + j);
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            *(y + i) += *(A + j * m + i) * *(x + j);
         }
     }
-    for(int i = 0; i < n; i++) {
+    for(int i = 0; i < m; i++) {
         *(y + i) = modq(*(y + i));
     }
     return y;
@@ -49,13 +49,13 @@ int* vm_mult(int* x, int* A, int* y) {
 
 keys Setup() {
     keys PS_keys;
-    PS_keys.PK.A = malloc(m * n * sizeof(int));
+    PS_keys.PK.A = malloc(n * m * sizeof(int));
     PS_keys.PK.b = malloc(m * sizeof(int));
     PS_keys.SK = malloc(n * sizeof(int));
     
-    for(int i = 0; i < m; i++) {
-        for(int j = 0; j < n; j++) {
-            *(PS_keys.PK.A + i * n + j) = modq(rand());
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < m; j++) {
+            *(PS_keys.PK.A + i * m + j) = modq(rand());
         }
     }
     for(int i = 0; i < n; i++) {
@@ -68,10 +68,10 @@ keys Setup() {
         *(e + i) = 0;
     }
 
-    int* A_SK = malloc(m * sizeof(int));
-    mv_mult(PS_keys.PK.A, PS_keys.SK, A_SK);
-    vv_add(A_SK, e, PS_keys.PK.b);
-    free(A_SK);
+    int* SK_A = malloc(m * sizeof(int));
+    vm_mult(PS_keys.SK, PS_keys.PK.A, SK_A);
+    vv_add(SK_A, e, PS_keys.PK.b);
+    free(SK_A);
     
     return PS_keys;
 }
@@ -85,7 +85,7 @@ CT_tuple Enc(pub_key_tuple PK, int M) {
         *(r + i) = modq(rand());
     }
 
-    vm_mult(r, PK.A, CT.CT1);
+    mv_mult(PK.A, r, CT.CT1);
     CT.CT2 = modq(vv_mult_m(PK.b, r) + (int) (q / 2) * M);
 
     free(r);
@@ -105,7 +105,11 @@ int Dec(int* SK, CT_tuple CT) {
 
 int main() {
     keys PS_keys = Setup();
-    CT_tuple CT = Enc(PS_keys.PK, 0);
+    CT_tuple CT = Enc(PS_keys.PK, 1);
     int M = Dec(PS_keys.SK, CT);
+    printf("%d\n", M);
+
+    CT = Enc(PS_keys.PK, 0);
+    M = Dec(PS_keys.SK, CT);
     printf("%d\n", M);
 }
